@@ -46,3 +46,8 @@ Devise.add_module(:ldap_authenticatable,
                   :strategy   => true,
                   :controller => :sessions,
                   :model  => 'devise_ldap_authenticatable/model')
+Devise.add_module(:ldap_database_authenticatable,
+                  :route => :session, ## This will add the routes, rather than in the routes.rb
+                  :strategy   => true,
+                  :controller => :sessions,
+                  :model  => 'devise_ldap_authenticatable/model')
