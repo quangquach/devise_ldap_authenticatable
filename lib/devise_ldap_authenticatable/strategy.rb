@@ -17,7 +17,25 @@ module Devise
         end
       end
     end
+    class LdapDatabaseAuthenticatable < Authenticatable
+      # Authenticate a user based on login and password params, returning to warden
+      # success and the authenticated user if everything is okay. Otherwise redirect
+      # to sign in page.
+      def authenticate!
+        resource = valid_password? && 
+          (mapping.to.authenticate_with_ldap(params[scope]) ||
+           mapping.to.find_for_database_authentication(authenticate_hash))
+        if validate(resource)
+          success!(resource)
+        else
+          fail(:invalid)
+        end
+      end
+    end
   end
 end
 
-Warden::Strategies.add(:ldap_authenticatable, Devise::Strategies::LdapAuthenticatable)
+Warden::Strategies.add(:ldap_authenticatable,
+                       Devise::Strategies::LdapAuthenticatable)
+Warden::Strategies.add(:ldap_database_authenticatable,
+                       Devise::Strategies::LdapDatabaseAuthenticatable)
